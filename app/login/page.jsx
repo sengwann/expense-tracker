@@ -47,7 +47,7 @@ export default function LogInForm() {
     if (email.trim() && password.length >= 6) {
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        router.push("/addExpense");
+        router.push("/dashboard");
         setLoading(false);
         setEmail("");
         setPassword("");
