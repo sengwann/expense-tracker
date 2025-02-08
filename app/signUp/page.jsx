@@ -83,7 +83,7 @@ export default function SignUpForm() {
         setLoading(false);
         toast({
           position: "top",
-          description: "Error occurred while signing up. Please try again.",
+          description: `Error occurred while signing up. Please try again.${err.message}`,
           status: "error",
           duration: 3000,
           isClosable: true,
