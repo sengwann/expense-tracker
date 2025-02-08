@@ -612,7 +612,6 @@ export default function Dashboard() {
                   <Input
                     placeholder="Amount"
                     type="number"
-                    min={1}
                     required
                     value={formData.amount}
                     onChange={(e) => {
