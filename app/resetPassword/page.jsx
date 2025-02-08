@@ -1,12 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { auth } from "../lib/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { Box, Button, Input, Text, useToast } from "@chakra-ui/react";
+import Loading from "../lib/loading/loading";
 
-export default function ForgotPassword() {
+export default function Page() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <ForgotPassword />
+    </Suspense>
+  );
+}
+
+function ForgotPassword() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
