@@ -129,7 +129,6 @@ const TransactionsTable = ({ transactions, Toast, loading }) => {
   return (
     <TableContainer
       height="300px"
-      overflowY="auto"
       overflowX="auto" // Enables horizontal scroll on small screens
     >
       <Table variant="simple" mb={8} size="sm">
