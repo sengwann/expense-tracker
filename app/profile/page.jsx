@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Avatar,
   Box,
   Button,
   FormControl,
@@ -68,7 +67,7 @@ const ProfileEdit = () => {
       } catch (error) {
         toast({
           position: "top",
-          description: "Incorrect old password!",
+          description: `Incorrect old password! ${error.message}`,
           status: "error",
           duration: 1000,
           isClosable: true,

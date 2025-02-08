@@ -37,7 +37,7 @@ export default function Sidebar() {
     } catch (err) {
       toast({
         position: "top",
-        description: "Error occure while logout!",
+        description: `Error occure while logout! ${err.message}`,
         status: "error",
         duration: 2000,
         isClosable: true,

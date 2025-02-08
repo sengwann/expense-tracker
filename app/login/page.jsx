@@ -186,7 +186,7 @@ export default function LogInForm() {
           </Button>
         </form>
         <Text fontSize="sm" align="center" color="#374151">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link as={NextLink} color="#F97316" href="/signUp">
             Sign Up
           </Link>

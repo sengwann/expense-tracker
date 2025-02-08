@@ -62,12 +62,18 @@ import { useAuth } from "../_Auth/AuthContext";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const TransactionsTable = ({
-  transactions,
-  Toast,
-  currencySymbol,
-  loading,
-}) => {
+const getSymbol = (currency) => {
+  const symbol = {
+    baht: "THB",
+    kyats: "MMK",
+    usd: "$",
+    jpy: "JPY",
+  };
+
+  return symbol[currency];
+};
+
+const TransactionsTable = ({ transactions, Toast, loading }) => {
   const handleUpdate = async (id, updateData) => {
     try {
       const transactionRef = doc(db, "transactions", id);
@@ -188,8 +194,7 @@ const TransactionsTable = ({
                     {transaction.description}
                   </Td>
                   <Td isNumeric>
-                    {transaction.amount}{" "}
-                    {currencySymbol[transaction.currencyType]}
+                    {transaction.amount} {getSymbol(transaction.currencyType)}
                   </Td>
                   <Td>
                     <HStack spacing={2}>
@@ -221,7 +226,6 @@ const PaginatedTable = ({
   setPage,
   Toast,
   setTransactions,
-  currencySymbol,
   loading,
 }) => {
   const itemsPerPage = 5;
@@ -238,7 +242,6 @@ const PaginatedTable = ({
         transactions={displayedTransactions}
         setTransactions={setTransactions}
         Toast={Toast}
-        currencySymbol={currencySymbol}
         loading={loading}
       />
 
@@ -331,12 +334,7 @@ export default function Dashboard() {
   const [skinCareExpense, setSkinCareExpense] = useState(0);
   const [transactionType, setTransactionType] = useState("Expense");
   const [categoryType, setCategoryType] = useState("");
-  const [currencySymbol, setCurrencySymbol] = useState({
-    baht: "THB",
-    kyats: "Ks",
-    usd: "$",
-    jpy: "JPY",
-  });
+
   const { user } = useAuth();
   const toast = useToast();
 
@@ -401,7 +399,7 @@ export default function Dashboard() {
     );
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user, toast]);
 
   const chartOptions = {
     chart: { type: "donut" },
@@ -668,7 +666,6 @@ export default function Dashboard() {
               Toast={Toast}
               page={page}
               setPage={setPage}
-              currencySymbol={currencySymbol}
               loading={loading}
             />
             <Filters
