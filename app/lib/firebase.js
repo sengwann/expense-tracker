@@ -4,16 +4,6 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Your Firebase configuration
-/*const firebaseConfige = {
-  apiKey: "AIzaSyB5gRPGBH-pFVGvOosM4qtsIxftfxvLR-w",
-  authDomain: "expense-tracker-f9299.firebaseapp.com",
-  projectId: "expense-tracker-f9299",
-  storageBucket: "expense-tracker-f9299.firebasestorage.app",
-  messagingSenderId: "875382178539",
-  appId: "1:875382178539:web:7d2fb82ff10bb91846f4ae",
-  measurementId: "G-YB9GTXQX0R",
-};
-*/
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
