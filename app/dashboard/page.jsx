@@ -173,7 +173,7 @@ const TransactionsTable = ({ transactions, Toast, loading }) => {
                     </Td>
                   </Tr>
                 ))
-            : transactions.map((transaction, index) => (
+            : transactions.map((transaction) => (
                 <Tr key={transaction.id}>
                   <Td>{format(new Date(transaction.date), "yyyy-MM-dd")}</Td>
                   <Td>
