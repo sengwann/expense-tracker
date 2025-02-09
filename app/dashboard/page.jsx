@@ -134,7 +134,6 @@ const TransactionsTable = ({ transactions, Toast, loading }) => {
       <Table variant="simple" mb={8} size="sm">
         <Thead bg="gray.200" position="sticky" top="0" zIndex="1">
           <Tr>
-            <Th color="#1E3A8A">NO.</Th>
             <Th color="#1E3A8A">Date</Th>
             <Th color="#1E3A8A">Type</Th>
             <Th color="#1E3A8A">Category</Th>
@@ -176,8 +175,6 @@ const TransactionsTable = ({ transactions, Toast, loading }) => {
                 ))
             : transactions.map((transaction, index) => (
                 <Tr key={transaction.id}>
-                  {/* Highlight the row when hovered */}
-                  <Td>{index + 1}</Td>
                   <Td>{format(new Date(transaction.date), "yyyy-MM-dd")}</Td>
                   <Td>
                     <Badge
