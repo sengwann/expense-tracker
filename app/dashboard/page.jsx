@@ -305,7 +305,7 @@ export default function Dashboard() {
     date: new Date().toISOString().split("T")[0],
     amount: 1,
     description: "",
-    currencyType: "baht",
+    currencyType: "THB",
   });
 
   const [transactions, setTransactions] = useState([]);
@@ -626,8 +626,8 @@ export default function Dashboard() {
                       value={formData.currencyType}
                       onChange={handleInputChange}
                     >
-                      <option value="baht">Baht</option>
-                      <option value="kyats">Kyats</option>
+                      <option value="baht">THB</option>
+                      <option value="kyats">MMK</option>
                       <option value="usd">USD</option>
                       <option value="jpy">JPY</option>
                     </Select>
