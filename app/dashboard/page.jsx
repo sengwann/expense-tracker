@@ -305,7 +305,7 @@ export default function Dashboard() {
     date: new Date().toISOString().split("T")[0],
     amount: 1,
     description: "",
-    currencyType: "THB",
+    currencyType: "baht",
   });
 
   const [transactions, setTransactions] = useState([]);
