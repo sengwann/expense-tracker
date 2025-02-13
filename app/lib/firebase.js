@@ -2,12 +2,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-<<<<<<< HEAD
-import { getStorage } from "firebase/storage"; // Import Firebase Storage
-=======
-import { getStorage } from "firebase/storage";
->>>>>>> b9eba70 (Add new feature export to Excel)
-
 // Your Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -25,8 +19,3 @@ const app = initializeApp(firebaseConfig);
 // Initialize Analytics and Auth
 export const auth = getAuth(app); // Export auth instance
 export const db = getFirestore(app);
-<<<<<<< HEAD
-export const storage = getStorage(app); // Initialize Firebase Storage
-=======
-export const storage = getStorage(app);
->>>>>>> b9eba70 (Add new feature export to Excel)
