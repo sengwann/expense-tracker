@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Button,
   Select,
@@ -7,9 +9,13 @@ import {
   Popover,
   Box,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { useAuth } from "../_Auth/AuthContext";
+import exportToExcel from "../lib/exportExcel/exportExcel";
 
 export const Filters = ({
   filters,
@@ -29,6 +35,14 @@ export const Filters = ({
   setHealthExpense,
   setFoodExpense,
 }) => {
+  const { user } = useAuth();
+  const [fileredData, setFileredData] = useState(transactions);
+
+  useEffect(() => {
+    if (!user) return;
+    setFileredData(transactions);
+  }, [transactions, user]);
+
   const calculateTotals = (filteredTransactions) => {
     const income = filteredTransactions
       .filter((t) => t.type === "Income")
@@ -85,8 +99,10 @@ export const Filters = ({
     const filteredTransactions = transactions.filter((transaction) =>
       filterLogic(transaction, { ...filters, dateRange: newDateRange })
     );
+    setFileredData(filteredTransactions);
     const total = calculateTotals(filteredTransactions);
     setTotalIncome(total.income);
+
     setTotalExpense(total.expense);
     setNetBalance(total.netBalance);
     setFoodExpense(total.food);
@@ -103,11 +119,24 @@ export const Filters = ({
       mb={8}
       justifyContent="flex-end"
     >
+      <Button
+        bg="#1E3A8A"
+        color="white"
+        _hover={{ bg: "#F97316" }}
+        w={{ base: "100%", md: "250px" }}
+        onClick={() => exportToExcel(fileredData, user.uid)}
+      >
+        Export to Excel
+      </Button>
       {/* Date Range Filter */}
       <Box>
         <Popover>
           <PopoverTrigger>
-            <Button w={{ base: "100%", md: "250px" }}>
+            <Button
+              w={{ base: "100%", md: "250px" }}
+              bg="gray.200"
+              _hover={{ bg: "gray.300" }}
+            >
               {displayValue.start} - {displayValue.end}
             </Button>
           </PopoverTrigger>
@@ -135,6 +164,7 @@ export const Filters = ({
           const filteredTransactions = transactions.filter((transaction) =>
             filterLogic(transaction, newFilters)
           );
+          setFileredData(filteredTransactions);
           const total = calculateTotals(filteredTransactions);
           setTotalIncome(total.income);
           setTotalExpense(total.expense);
@@ -163,6 +193,7 @@ export const Filters = ({
           const filteredTransactions = transactions.filter((transaction) =>
             filterLogic(transaction, newFilters)
           );
+          setFileredData(filteredTransactions);
           const total = calculateTotals(filteredTransactions);
           setTotalIncome(total.income);
           setTotalExpense(total.expense);

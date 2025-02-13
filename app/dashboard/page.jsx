@@ -216,14 +216,7 @@ const TransactionsTable = ({ transactions, Toast, loading }) => {
     </TableContainer>
   );
 };
-const PaginatedTable = ({
-  transactions,
-  page,
-  setPage,
-  Toast,
-  setTransactions,
-  loading,
-}) => {
+const PaginatedTable = ({ transactions, page, setPage, Toast, loading }) => {
   const itemsPerPage = 5;
   const totalPages = Math.ceil(transactions.length / itemsPerPage);
 
@@ -236,7 +229,6 @@ const PaginatedTable = ({
     <Box>
       <TransactionsTable
         transactions={displayedTransactions}
-        setTransactions={setTransactions}
         Toast={Toast}
         loading={loading}
       />
@@ -305,7 +297,7 @@ export default function Dashboard() {
     currencyType: "baht",
   });
 
-  const [transactions, setTransactions] = useState([]);
+  const [mainTransactions, setMainTransactions] = useState([]);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
     type: "",
@@ -350,7 +342,7 @@ export default function Dashboard() {
           id: doc.id,
           ...doc.data(),
         }));
-        setTransactions(data);
+        setMainTransactions(data);
         setLoading(false);
         // Calculate totals
         const calculateTotal = (data, type) => {
@@ -654,17 +646,16 @@ export default function Dashboard() {
           {/* Filter and Table */}
           <Stack spacing={4} mb={8}>
             <PaginatedTable
-              transactions={transactions
+              transactions={mainTransactions
                 .filter((txn) => filterLogic(txn, filters))
                 .sort((a, b) => new Date(a.date) - new Date(b.date))}
-              setTransactions={setTransactions}
               Toast={Toast}
               page={page}
               setPage={setPage}
               loading={loading}
             />
             <Filters
-              transactions={transactions}
+              transactions={mainTransactions}
               filterLogic={filterLogic}
               filters={filters}
               setFilters={setFilters}
