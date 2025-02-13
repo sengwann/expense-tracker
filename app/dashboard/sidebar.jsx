@@ -16,11 +16,7 @@ import {
   FaSignOutAlt,
   FaUser,
   FaChartPie,
-<<<<<<< HEAD
   FaCamera,
-=======
-  FaHistory,
->>>>>>> b9eba70 (Add new feature export to Excel)
 } from "react-icons/fa";
 import { auth, db, storage } from "../lib/firebase"; // Import Firestore & Storage
 import { signOut } from "firebase/auth";
@@ -106,7 +102,7 @@ export default function Sidebar() {
       {/* Profile Section */}
       <Flex direction="column" align="center" mb={8} position="relative">
         <Avatar size="xl" name={user.email} src={profileImage} />
-        
+
         {/* Camera Icon Button */}
         <Button
           position="absolute"
@@ -139,17 +135,11 @@ export default function Sidebar() {
       {/* Navigation Links */}
       <VStack align="start" spacing={4} w="100%">
         <NavItem icon={FaHome} label="Home" href="#" />
-<<<<<<< HEAD
-        <NavItem icon={FaUser} label="Profile" href="/profile" />
-=======
         <NavItem icon={FaUser} label="Profile" href={"/profile"} />
-        <NavItem icon={FaHistory} label="Export History" href="#" />
->>>>>>> b9eba70 (Add new feature export to Excel)
         <NavItem icon={FaCog} label="Settings" href="#" />
         <NavItem icon={FaChartPie} label="Reports" href="#" />
       </VStack>
 
-      {/* Logout Button */}
       <Button
         leftIcon={<Icon as={FaSignOutAlt} />}
         bg="#F97316"
