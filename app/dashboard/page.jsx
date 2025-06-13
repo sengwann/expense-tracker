@@ -3,9 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import useSWR from "swr";
 import { Box, Flex, Heading, Stack, Skeleton } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
 import Sidebar from "./components/sidebar";
-import Filters from "./components/filter";
 import TransactionForm from "./components/form";
 import DisplayBalance from "./components/displayBalance";
 import ProtectRoute from "../_Auth/ProtectRoute";
@@ -14,8 +12,6 @@ import { useAuth } from "../_Auth/AuthContext";
 import { fetcher } from "@/app/lib/utils/util";
 import Chart from "./components/chart";
 import MainActions from "./components/MainActions";
-
-const DynamicChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function Dashboard() {
   const [filters, setFilters] = useState({
