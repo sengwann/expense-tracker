@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback, useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
   Box,
   Button,
@@ -14,82 +16,190 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
 import {
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
 } from "firebase/auth";
 import { useAuth } from "../_Auth/AuthContext";
-import { useRouter } from "next/navigation";
+import { showToast } from "../lib/utils/util";
 
 const ProfileEdit = () => {
   const { user } = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
   const toast = useToast();
 
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    oldPassword: "",
+    newPassword: "",
+  });
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    old: false,
+    new: false,
+  });
+
+  // Set email from user on mount
   useEffect(() => {
-    if (user) {
-      setEmail(user.email);
+    if (user?.email) {
+      setFormData((prev) => ({ ...prev, email: user.email }));
     }
   }, [user]);
 
-  const handleSave = async (event) => {
-    event.preventDefault();
-    setLoading(true);
+  // Memoized toggle functions
+  const togglePasswordVisibility = useCallback((field) => {
+    setPasswordVisibility((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  }, []);
 
-    if (user) {
+  // Memoized input change handler
+  const handleInputChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  // Memoized submit handler
+  const handleSave = useCallback(
+    async (event) => {
+      event.preventDefault();
+      setLoading(true);
+
+      if (!user) {
+        showToast("No user is signed in", "error", toast);
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Step 1: Re-authenticate the user
-        const credential = EmailAuthProvider.credential(email, oldPassword);
+        // Re-authenticate the user
+        const credential = EmailAuthProvider.credential(
+          formData.email,
+          formData.oldPassword
+        );
         await reauthenticateWithCredential(user, credential);
 
-        // Step 2: Update password
-        if (newPassword) {
-          await updatePassword(user, newPassword);
-          setOldPassword("");
-          setNewPassword("");
-          toast({
-            position: "top",
-            description: "Password updated successfully!",
-            status: "success",
-            duration: 1000,
-            isClosable: true,
-          });
+        // Update password if new password provided
+        if (formData.newPassword) {
+          await updatePassword(user, formData.newPassword);
+          setFormData((prev) => ({
+            ...prev,
+            oldPassword: "",
+            newPassword: "",
+          }));
+          showToast("Password updated successfully!", "success", toast);
           router.push("/dashboard");
         }
       } catch (error) {
-        toast({
-          position: "top",
-          description: `Incorrect old password! ${error.message}`,
-          status: "error",
-          duration: 1000,
-          isClosable: true,
-        });
+        console.error("Error updating password:", error);
+        let errorMessage = error.message;
+
+        // Handle specific error cases
+        if (error.code === "auth/wrong-password") {
+          errorMessage = "Incorrect current password";
+        } else if (error.code === "auth/weak-password") {
+          errorMessage = "Password should be at least 6 characters";
+        }
+
+        showToast(`Error: ${errorMessage}`, "error", toast);
       } finally {
         setLoading(false);
       }
-    } else {
-      setLoading(false);
-      toast({
-        position: "top",
-        description: "No user is signed in",
-        status: "error",
-        duration: 1000,
-        isClosable: true,
-      });
-    }
-  };
+    },
+    [user, formData, toast, router]
+  );
+
+  // Memoized form JSX to prevent unnecessary re-renders
+  const formContent = useMemo(
+    () => (
+      <form onSubmit={handleSave}>
+        <VStack spacing={4}>
+          <FormControl>
+            <FormLabel color="#374151">Email</FormLabel>
+            <Input name="email" value={formData.email} readOnly bg="gray.100" />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel color="#374151">Old Password</FormLabel>
+            <InputGroup>
+              <Input
+                name="oldPassword"
+                type={passwordVisibility.old ? "text" : "password"}
+                minLength={6}
+                required
+                value={formData.oldPassword}
+                placeholder="Old password"
+                onChange={handleInputChange}
+                bg="gray.100"
+              />
+              <InputRightElement>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => togglePasswordVisibility("old")}
+                  color="#1E3A8A"
+                >
+                  {passwordVisibility.old ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel color="#374151">New Password</FormLabel>
+            <InputGroup>
+              <Input
+                name="newPassword"
+                type={passwordVisibility.new ? "text" : "password"}
+                minLength={6}
+                placeholder="New password"
+                required
+                value={formData.newPassword}
+                onChange={handleInputChange}
+                bg="gray.100"
+              />
+              <InputRightElement>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => togglePasswordVisibility("new")}
+                  color="#1E3A8A"
+                >
+                  {passwordVisibility.new ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+
+          <Button
+            colorScheme="blue"
+            type="submit"
+            isLoading={loading}
+            width="100%"
+            bg="#1E3A8A"
+            _hover={{ bg: "#F97316" }}
+            color="white"
+          >
+            Save Changes
+          </Button>
+        </VStack>
+      </form>
+    ),
+    [
+      formData,
+      passwordVisibility,
+      loading,
+      handleSave,
+      handleInputChange,
+      togglePasswordVisibility,
+    ]
+  );
 
   return (
     <Container
-      bg="#F3F4F6" // Light gray background to maintain modern and clean look
+      bg="#F3F4F6"
       minH="100vh"
       display="flex"
       justifyContent="center"
@@ -103,85 +213,12 @@ const ProfileEdit = () => {
         mx="auto"
         bg="white"
         borderRadius="md"
-        boxShadow="lg" // Slightly stronger shadow for better visibility
+        boxShadow="lg"
       >
         <Heading size="lg" mb={5} textAlign="center" color="#1E3A8A">
-          {" "}
-          {/* Modern Blue Heading */}
           Edit Profile
         </Heading>
-
-        <form onSubmit={handleSave}>
-          <VStack spacing={4}>
-            <FormControl>
-              <FormLabel color="#374151">Email</FormLabel>{" "}
-              {/* Darker gray for form labels */}
-              <Input value={email} readOnly bg="gray.100" />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel color="#374151">Old Password</FormLabel>
-              <InputGroup>
-                <Input
-                  type={showOldPassword ? "text" : "password"}
-                  minLength={6}
-                  required
-                  value={oldPassword}
-                  placeholder="Old password"
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  bg="gray.100"
-                />
-                <InputRightElement>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setShowOldPassword(!showOldPassword)}
-                    color="#1E3A8A" // Modern orange for icon button
-                  >
-                    {showOldPassword ? <ViewOffIcon /> : <ViewIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel color="#374151">New Password</FormLabel>
-              <InputGroup>
-                <Input
-                  type={showNewPassword ? "text" : "password"}
-                  minLength={6}
-                  placeholder="New password"
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  bg="gray.100"
-                />
-                <InputRightElement>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    color="#1E3A8A" // Modern orange for icon button
-                  >
-                    {showNewPassword ? <ViewOffIcon /> : <ViewIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-
-            <Button
-              colorScheme="orange" // Use the orange color scheme for the button
-              type="submit"
-              isLoading={loading}
-              width="100%"
-              bg="#1E3A8A" // Set button to orange
-              _hover={{ bg: "#F97316" }} // Hover state to modern blue
-              color="white"
-            >
-              Save Changes
-            </Button>
-          </VStack>
-        </form>
+        {formContent}
       </Box>
     </Container>
   );

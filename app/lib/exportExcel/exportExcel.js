@@ -1,10 +1,20 @@
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { db } from "../firebase"; // Firestore instance
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-const exportToExcel = async (transactions, userId) => {
-  if (!transactions || transactions.length === 0) {
+const exportToExcel = async (userId, filters) => {
+  // Fetch transactions based on filters
+  const transactionsResponse = await fetch(
+    `/api/transactions/exportToExcel?userId=${userId}&type=${
+      filters.type || ""
+    }&category=${filters.category || ""}&startDate=${
+      filters.startDate || ""
+    }&endDate=${filters.endDate || ""}`
+  );
+  const transactionsJson = await transactionsResponse.json();
+  const transactions = transactionsJson.transactions || [];
+
+  if (!transactions.length) {
+    alert("No transactions found for export.");
     return;
   }
 
@@ -43,14 +53,6 @@ const exportToExcel = async (transactions, userId) => {
   });
 
   saveAs(dataBlob, fileName);
-
-  // ✅ Save export history in Firestore
-  await addDoc(collection(db, "exportHistory"), {
-    userId,
-    fileName,
-    timestamp: serverTimestamp(),
-    recordCount: transactions.length,
-  });
 };
 
 export default exportToExcel;

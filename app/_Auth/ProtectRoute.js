@@ -2,22 +2,24 @@
 
 import { useAuth } from "./AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import Loading from "../lib/loading/loading";
+import { useEffect } from "react";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login"); // Redirect if not authenticated
+      router.push("/login");
     }
   }, [user, loading, router]);
 
-  if (loading) return <Loading />; // Show loading while checking auth
+  if (loading) {
+    return <Loading />;
+  }
 
   return user ? children : null;
 };
 
-export default ProtectedRoute;
+export default ProtectRoute;
