@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
       showToast("Logout success!", "success", toast);
     } catch (error) {
-      showToast("Logout error!", "error", toast);
+      showToast(error.message || "Logout error", "error", !toast);
     }
   };
 

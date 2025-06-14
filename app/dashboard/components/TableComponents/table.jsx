@@ -159,7 +159,7 @@ function TransactionsTable({
           </Td>
         </Tr>
       )),
-    [transactions, handleDelete, mutateTransactions]
+    [transactions, handleDelete, mutateTransactions, userId]
   );
 
   return (

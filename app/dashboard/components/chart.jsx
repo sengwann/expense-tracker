@@ -3,54 +3,32 @@
 import { memo } from "react";
 import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+import { palette } from "@/app/lib/utils/util";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const Chart = memo(({ chartData }) => {
-  // Prepare data for Expense vs Income donut
+  // Expense vs Income
   const expenseIncomeOptions = {
     chart: { type: "donut" },
     labels: ["Income", "Expense"],
-    colors: ["#2563EB", "#F97316"], // blue, orange
+    colors: ["#2563EB", "#F97316"],
   };
   const expenseIncomeSeries = [chartData.income || 0, chartData.expense || 0];
 
-  // Prepare data for Expense Category donut
+  // Expense by Category
   let expenseCategoryLabels = Object.keys(chartData.expenseByCategory || {});
   let expenseCategorySeries = expenseCategoryLabels.map(
     (cat) => chartData.expenseByCategory[cat] ?? 0
   );
 
-  // Generate a color palette with enough distinct colors for all categories
-  const palette = [
-    "#2563EB", // blue
-    "#F97316", // orange
-    "#9333EA", // purple
-    "#FACC15", // yellow
-    "#F43F5E", // pink
-    "#10B981", // green
-    "#6366F1", // indigo
-    "#F59E42", // amber
-    "#0EA5E9", // sky
-    "#E11D48", // rose
-    "#22D3EE", // cyan
-    "#A3E635", // lime
-    "#FBBF24", // gold
-    "#C026D3", // fuchsia
-    "#F472B6", // pink-light
-    "#4ADE80", // emerald
-    "#FDE68A", // yellow-light
-    "#F87171", // red
-    "#34D399", // teal
-    "#818CF8", // violet
-  ];
   const expenseCategoryOptions = {
     chart: { type: "donut" },
     labels: expenseCategoryLabels,
     colors: palette.slice(0, expenseCategoryLabels.length),
   };
 
-  // If filtered by category and no breakdown, show the filtered category as the only slice
+  // Handle single filtered category
   if (
     (!expenseCategoryLabels.length ||
       expenseCategorySeries.every((v) => v === 0)) &&
@@ -68,15 +46,28 @@ const Chart = memo(({ chartData }) => {
   return (
     <Flex
       direction={{ base: "column", md: "row" }}
-      justifyContent="space-evenly"
+      justifyContent="center"
+      alignItems="flex-start"
       mt={8}
       gap={8}
+      px={{ base: 2, md: 4 }}
     >
-      <VStack width={{ base: "100%", md: "50%" }}>
-        <Heading size="md" mb={4} color="#1E3A8A">
+      <VStack
+        w={{ base: "100%", md: "50%" }}
+        spacing={4}
+        maxW="600px"
+        mx="auto"
+      >
+        <Heading size="md" color="#1E3A8A" textAlign="center">
           Expense vs Income
         </Heading>
-        <Box bg="white" p={4} borderRadius="md" w="100%">
+        <Box
+          bg="white"
+          p={{ base: 2, md: 4 }}
+          borderRadius="md"
+          w="full"
+          overflowX="auto"
+        >
           <ApexChart
             options={expenseIncomeOptions}
             series={expenseIncomeSeries}
@@ -85,11 +76,23 @@ const Chart = memo(({ chartData }) => {
           />
         </Box>
       </VStack>
-      <VStack width={{ base: "100%", md: "50%" }}>
-        <Heading size="md" mb={4} color="#1E3A8A">
+
+      <VStack
+        w={{ base: "100%", md: "50%" }}
+        spacing={4}
+        maxW="600px"
+        mx="auto"
+      >
+        <Heading size="md" color="#1E3A8A" textAlign="center">
           Expense Category Breakdown
         </Heading>
-        <Box bg="white" p={4} borderRadius="md" w="100%">
+        <Box
+          bg="white"
+          p={{ base: 2, md: 4 }}
+          borderRadius="md"
+          w="full"
+          overflowX="auto"
+        >
           {hasCategoryData ? (
             <ApexChart
               options={expenseCategoryOptions}
@@ -98,7 +101,7 @@ const Chart = memo(({ chartData }) => {
               width="100%"
             />
           ) : (
-            <Box textAlign="center" color="gray.500">
+            <Box textAlign="center" color="gray.500" py={8}>
               No expense category data
             </Box>
           )}
@@ -107,5 +110,7 @@ const Chart = memo(({ chartData }) => {
     </Flex>
   );
 });
+
+Chart.displayName = "Chart";
 
 export default Chart;

@@ -17,22 +17,24 @@ import {
   FaChartPie,
 } from "react-icons/fa";
 import { useAuth } from "../../_Auth/AuthContext";
+import NextLink from "next/link";
 
 // Memoized NavItem component to prevent unnecessary re-renders
 const NavItem = memo(({ icon, label, href }) => (
   <Link
+    as={NextLink}
     href={href}
-    style={{ textDecoration: "none", width: "100%" }}
+    passHref
     _hover={{ bg: "rgba(255, 255, 255, 0.2)" }}
-    p={3}
-    borderRadius="md"
-    display="flex"
-    alignItems="center"
+    w="100%"
   >
-    <Icon as={icon} mr={3} />
-    <Text>{label}</Text>
+    <Flex p={3} borderRadius="md" alignItems="center">
+      <Icon as={icon} mr={3} />
+      <Text>{label}</Text>
+    </Flex>
   </Link>
 ));
+NavItem.displayName = "NavItem";
 
 const Sidebar = memo(() => {
   const { user, logout } = useAuth();
@@ -91,5 +93,6 @@ const Sidebar = memo(() => {
     </Box>
   );
 });
+Sidebar.displayName = "Sidebar";
 
 export default Sidebar;

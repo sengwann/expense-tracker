@@ -3,7 +3,7 @@ export const incomeByCategory = ["salary", "gift", "investment", "bonus"];
 
 export const categoryOptions = (type, expenseByCategory, incomeByCategory) => {
   return [
-    <option key="select-category" value="">
+    <option key={`select-category-${type}`} value="">
       Category
     </option>,
     ...(type === "Expense" ? expenseByCategory : incomeByCategory).map(
@@ -194,3 +194,26 @@ export function initializeDefaultTotals(
 
   return defaultTotals;
 }
+
+export const palette = [
+  "#2563EB", // blue
+  "#F97316", // orange
+  "#9333EA", // purple
+  "#FACC15", // yellow
+  "#F43F5E", // pink
+  "#10B981", // green
+  "#6366F1", // indigo
+  "#F59E42", // amber
+  "#0EA5E9", // sky
+  "#E11D48", // rose
+  "#22D3EE", // cyan
+  "#A3E635", // lime
+  "#FBBF24", // gold
+  "#C026D3", // fuchsia
+  "#F472B6", // pink-light
+  "#4ADE80", // emerald
+  "#FDE68A", // yellow-light
+  "#F87171", // red
+  "#34D399", // teal
+  "#818CF8", // violet
+];

@@ -16,6 +16,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { showToast } from "@/app/lib/utils/util";
 
 export default function DeleteBatchButton({ userId, mutateTransactions }) {
   const toast = useToast();
@@ -26,15 +27,14 @@ export default function DeleteBatchButton({ userId, mutateTransactions }) {
   const [loading, setLoading] = useState(false);
 
   const handleOpen = () => {
+    setLocalStartDate("");
+    setLocalEndDate("");
     onOpen();
   };
 
   const handleDeleteBatch = async () => {
     if (!userId || !localStartDate || !localEndDate) {
-      toast({
-        status: "error",
-        description: "Please select a date range.",
-      });
+      showToast("Please select a valid date range.", "error", toast);
       return;
     }
     setLoading(true);
@@ -57,10 +57,7 @@ export default function DeleteBatchButton({ userId, mutateTransactions }) {
       }
 
       if (res.ok && data.status === 200) {
-        toast({
-          status: "success",
-          description: `Deleted ${data.deleted} transactions.`,
-        });
+        showToast("Batch deleted successfully.", "success", toast);
         if (mutateTransactions) mutateTransactions();
         onClose();
       } else {
@@ -70,7 +67,7 @@ export default function DeleteBatchButton({ userId, mutateTransactions }) {
         });
       }
     } catch (err) {
-      toast({ status: "error", description: err.message });
+      showToast(`Error deleting batch: ${err.message}`, "error", toast);
     } finally {
       setLoading(false);
     }

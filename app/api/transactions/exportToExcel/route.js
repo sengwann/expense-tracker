@@ -68,7 +68,9 @@ export async function GET(req) {
       transactions,
     });
   } catch (error) {
-    console.error("Error fetching transactions:", error);
-    return NextResponse.json({ status: 500, error: "Internal Server Error" });
+    return NextResponse.json({
+      status: 500,
+      error: error.message || "Internal Server Error",
+    });
   }
 }

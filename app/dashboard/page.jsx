@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   const { user } = useAuth();
 
-  const PAGE_LIMIT = 5; // Set your desired page size
+  const PAGE_LIMIT = 5;
 
   const swrResponse = useSWR(
     user?.uid
@@ -57,19 +57,19 @@ export default function Dashboard() {
     () => swrResponse.isLoading,
     [swrResponse.isLoading]
   );
+
   const mutateTransactions = useCallback(() => {
     swrResponse.mutate();
-  }, [swrResponse.mutate]);
+  }, [swrResponse]);
 
   const memoizedFilters = useMemo(() => filters, [filters]);
 
-  // Prepare chart data from totals or transactions
   const chartData = useMemo(() => {
     const expense = totals?.totalExpense || 0;
     const income = totals?.totalIncome || 0;
     const expenseByCategory = totals?.expenseByCategory || {};
     const incomeByCategory = totals?.incomeByCategory || {};
-    // Pass the current category filter for chart breakdown logic
+
     return {
       expense,
       income,
@@ -79,7 +79,7 @@ export default function Dashboard() {
     };
   }, [totals, filters.category]);
 
-  // Pagination handlers
+  // Pagination
   const handleNextPage = useCallback(() => {
     if (hasMore && newLastDoc) {
       setCursorStack((prev) => [...prev, newLastDoc]);
@@ -99,7 +99,6 @@ export default function Dashboard() {
     }
   }, [cursorStack]);
 
-  // Reset pagination on filter change
   useEffect(() => {
     setLastDoc("");
     setCursorStack([""]);
@@ -109,17 +108,28 @@ export default function Dashboard() {
   return (
     <ProtectRoute>
       <Flex direction={{ base: "column", md: "row" }}>
+        {/* Sidebar */}
         <Box
           display={{ base: "none", md: "block" }}
           width="300px"
           color="white"
           minHeight="100vh"
           p={5}
+          position="fixed"
+          top={0}
+          left={0}
+          bg="#1E3A8A"
         >
           <Sidebar />
         </Box>
 
-        <Box bg="#F3F4F6" p={8} ml={{ base: 0, md: "60px" }} w="full">
+        {/* Main content */}
+        <Box
+          bg="#F3F4F6"
+          p={{ base: 4, md: 8 }}
+          ml={{ base: 0, md: "300px" }}
+          w="full"
+        >
           <Heading mb={6} textAlign="center" color="#1E3A8A">
             Welcome to Expense Tracker
           </Heading>
@@ -133,7 +143,7 @@ export default function Dashboard() {
 
           {/* Transactions Table */}
           <Stack spacing={4} mb={8}>
-            {false ? (
+            {isTransactionsLoading ? (
               <Skeleton height="300px" />
             ) : (
               <PaginatedTable
@@ -151,7 +161,7 @@ export default function Dashboard() {
             )}
           </Stack>
 
-          {/* MainActions: Filters, Delete Batch, Export */}
+          {/* Filters and Actions */}
           <Box mt={6} mb={2} display="flex" justifyContent="center">
             <MainActions
               filters={memoizedFilters}
@@ -161,6 +171,7 @@ export default function Dashboard() {
               mutateTransactions={mutateTransactions}
             />
           </Box>
+
           <Chart chartData={chartData} />
         </Box>
       </Flex>

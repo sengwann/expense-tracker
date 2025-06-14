@@ -18,7 +18,6 @@ try {
     );
   }
 } catch (error) {
-  console.error("Error parsing Firebase Admin SDK credentials:", error);
   throw new Error("Invalid Firebase Admin SDK credentials.");
 }
 

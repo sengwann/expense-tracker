@@ -93,7 +93,6 @@ const ProfileEdit = () => {
           router.push("/dashboard");
         }
       } catch (error) {
-        console.error("Error updating password:", error);
         let errorMessage = error.message;
 
         // Handle specific error cases
@@ -201,21 +200,22 @@ const ProfileEdit = () => {
     <Container
       bg="#F3F4F6"
       minH="100vh"
+      maxW="100%"
       display="flex"
       justifyContent="center"
       alignItems="center"
       p={4}
     >
       <Box
-        p={6}
-        width={["90%", "400px"]}
-        maxW="400px"
+        p={10}
+        width={["95%", "500px"]}
+        maxW="500px"
         mx="auto"
         bg="white"
         borderRadius="md"
         boxShadow="lg"
       >
-        <Heading size="lg" mb={5} textAlign="center" color="#1E3A8A">
+        <Heading size="md" mb={5} textAlign="center" color="#1E3A8A">
           Edit Profile
         </Heading>
         {formContent}

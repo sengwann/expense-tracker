@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo, useCallback, useMemo } from "react";
+import { useState, memo, useCallback } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -25,11 +25,7 @@ import {
   expenseByCategory,
   incomeByCategory,
 } from "@/app/lib/utils/util";
-import {
-  showToast,
-  updateTotals,
-  getCategoryAndTotal,
-} from "@/app/lib/utils/util";
+import { showToast } from "@/app/lib/utils/util";
 
 function UpdateTransactionModal({
   userId,

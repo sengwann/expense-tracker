@@ -180,10 +180,9 @@ export async function GET(req) {
       hasMore,
     });
   } catch (error) {
-    console.error("Error processing GET request:", error);
     return NextResponse.json({
       status: 500,
-      error: "Internal server error. Please try again later.",
+      error: error.message || "Internal server error. Please try again later.",
     });
   }
 }

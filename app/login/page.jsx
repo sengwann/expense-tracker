@@ -68,7 +68,6 @@ export default function LogInForm() {
         showToast("Login successful!", "success", toast);
         router.push("/dashboard");
       } catch (error) {
-        console.error("Error in handleLogIn:", error);
         showToast(
           errorMessages[error.code] || "An unknown error occurred.",
           "error",

@@ -34,17 +34,11 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
 
   const toast = useToast();
 
-  // Memoize handleChange to prevent recreation on every render
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
-      // Reset category if type changes
       if (name === "type" && value !== prev.type) {
-        return {
-          ...prev,
-          type: value,
-          category: "",
-        };
+        return { ...prev, type: value, category: "" };
       }
       return {
         ...prev,
@@ -58,11 +52,43 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
     });
   }, []);
 
-  // Memoize handleAdd since it depends on formData and mutateTransactions
+  const processTransaction = useCallback(async () => {
+    const tranRef = doc(collection(db, "users", userId, "transactions"));
+    const totalRef = doc(db, "users", userId, "dailyTotals", formData.date);
+    const amount = Number(formData.amount);
+
+    const newTransaction = {
+      ...formData,
+      amount,
+      id: tranRef.id,
+    };
+
+    await runTransaction(db, async (transaction) => {
+      const totalSnap = await transaction.get(totalRef);
+      transaction.set(tranRef, newTransaction);
+
+      if (totalSnap.exists()) {
+        updateExistingTotals(
+          transaction,
+          totalRef,
+          totalSnap.data(),
+          newTransaction
+        );
+      } else {
+        initializeNewTotals(
+          transaction,
+          totalRef,
+          newTransaction,
+          expenseByCategory,
+          incomeByCategory
+        );
+      }
+    });
+  }, [userId, formData]);
+
   const handleAdd = useCallback(
     async (e) => {
       e.preventDefault();
-
       if (!formData.type) {
         showToast("Please select a type.", "error", toast);
         return;
@@ -86,48 +112,11 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
         mutateTransactions();
       }
     },
-    [formData, userId, mutateTransactions, toast]
+    [formData, mutateTransactions, toast, processTransaction]
   );
 
-  // Helper functions
   const isValidAmount = (amount) => {
     return amount && Number(amount) > 0;
-  };
-
-  const processTransaction = async () => {
-    const tranRef = doc(collection(db, "users", userId, "transactions"));
-    const totalRef = doc(db, "users", userId, "dailyTotals", formData.date);
-    const amount = Number(formData.amount);
-
-    const newTransaction = {
-      ...formData,
-      amount,
-      id: tranRef.id,
-    };
-
-    await runTransaction(db, async (transaction) => {
-      const totalSnap = await transaction.get(totalRef);
-
-      transaction.set(tranRef, newTransaction);
-
-      // Update totals document
-      if (totalSnap.exists()) {
-        updateExistingTotals(
-          transaction,
-          totalRef,
-          totalSnap.data(),
-          newTransaction
-        );
-      } else {
-        initializeNewTotals(
-          transaction,
-          totalRef,
-          newTransaction,
-          expenseByCategory,
-          incomeByCategory
-        );
-      }
-    });
   };
 
   const resetForm = () => {
@@ -143,81 +132,87 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
 
   return (
     <form onSubmit={handleAdd}>
-      <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={4}>
-        <FormControl>
-          <Select
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Type</option>
-            <option value="Income">Income</option>
-            <option value="Expense">Expense</option>
-          </Select>
-        </FormControl>
+      <Stack spacing={4} mb={4}>
+        <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+          <FormControl w="100%">
+            <Select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Type</option>
+              <option value="Income">Income</option>
+              <option value="Expense">Expense</option>
+            </Select>
+          </FormControl>
 
-        <FormControl>
-          <Select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            {categoryOptions(
-              formData.type,
-              expenseByCategory,
-              incomeByCategory
-            )}
-          </Select>
-        </FormControl>
+          <FormControl w="100%">
+            <Select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              required
+            >
+              {categoryOptions(
+                formData.type,
+                expenseByCategory,
+                incomeByCategory
+              )}
+            </Select>
+          </FormControl>
+        </Stack>
 
-        <FormControl>
+        <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+          <FormControl w="100%">
+            <Input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+            />
+          </FormControl>
+
+          <FormControl w="100%">
+            <InputGroup w="100%">
+              <Input
+                placeholder="Amount"
+                type="number"
+                name="amount"
+                value={formData.amount}
+                onChange={handleChange}
+                required
+                min={0}
+              />
+              <InputRightAddon p={0}>
+                <Select
+                  border="none"
+                  size="sm"
+                  name="currencyType"
+                  value={formData.currencyType}
+                  onChange={handleChange}
+                >
+                  <option value="THB">THB</option>
+                </Select>
+              </InputRightAddon>
+            </InputGroup>
+          </FormControl>
+        </Stack>
+
+        <FormControl w="100%">
           <Input
-            type="date"
-            name="date"
-            value={formData.date}
+            placeholder="Description"
+            name="description"
+            value={formData.description}
             onChange={handleChange}
           />
         </FormControl>
-
-        <FormControl>
-          <InputGroup width={{ base: "100%", md: "200px" }}>
-            <Input
-              placeholder="Amount"
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              required
-              min={0}
-            />
-            <InputRightAddon p={0}>
-              <Select
-                border="none"
-                size="sm"
-                name="currencyType"
-                value={formData.currencyType}
-                onChange={handleChange}
-              >
-                <option value="THB">THB</option>
-              </Select>
-            </InputRightAddon>
-          </InputGroup>
-        </FormControl>
-
-        <Input
-          placeholder="Description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-        />
 
         <Button
           bg="#1E3A8A"
           color="white"
           _hover={{ bg: "#F97316" }}
-          w={{ base: "100%", md: "250px" }}
+          w="100%"
           type="submit"
         >
           Add
@@ -226,5 +221,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
     </form>
   );
 });
+
+TransactionForm.displayName = "TransactionForm";
 
 export default TransactionForm;

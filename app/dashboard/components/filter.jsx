@@ -96,6 +96,7 @@ const Filters = memo(({ filters, setFilters }) => {
       startDate: "",
       endDate: "",
     });
+    closeModal();
   };
 
   return (
@@ -183,14 +184,12 @@ const Filters = memo(({ filters, setFilters }) => {
             >
               Clear Filter
             </Button>
-            <Button variant="outline" onClick={closeModal}>
-              Cancel
-            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   );
 });
+Filters.displayName = "Filters";
 
 export default Filters;

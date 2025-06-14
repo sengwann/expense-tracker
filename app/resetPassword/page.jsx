@@ -95,6 +95,7 @@ const ForgotPassword = memo(() => {
     </Box>
   );
 });
+ForgotPassword.displayName = "ForgotPassword";
 
 // Page component remains the same
 export default function Page() {

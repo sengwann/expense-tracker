@@ -25,5 +25,6 @@ const DisplayBalance = memo(({ mainTotals }) => {
     </SimpleGrid>
   );
 });
+DisplayBalance.displayName = "DisplayBalance";
 
 export default DisplayBalance;
