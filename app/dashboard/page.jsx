@@ -30,9 +30,7 @@ export default function Dashboard() {
 
   const swrResponse = useSWR(
     user?.uid
-      ? `${
-          process.env.NEXT_PUBLIC_API_BASE_URL
-        }/api/transactions?${new URLSearchParams({
+      ? `/api/transactions?${new URLSearchParams({
           userId: user.uid,
           lastDocId: lastDoc,
           limit: PAGE_LIMIT,
