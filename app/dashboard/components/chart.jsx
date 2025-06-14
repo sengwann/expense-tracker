@@ -91,6 +91,7 @@ const Chart = memo(({ chartData }) => {
           p={{ base: 2, md: 4 }}
           borderRadius="md"
           w="full"
+          h="100%"
           overflowX="auto"
         >
           {hasCategoryData ? (
@@ -101,7 +102,7 @@ const Chart = memo(({ chartData }) => {
               width="100%"
             />
           ) : (
-            <Box textAlign="center" color="gray.500" py={8}>
+            <Box textAlign="center" color="gray.500" py={8} h="100%">
               No expense category data
             </Box>
           )}
