@@ -18,7 +18,7 @@ try {
     );
   }
 } catch (error) {
-  throw new Error("Invalid Firebase Admin SDK credentials.");
+  throw new Error(error.message || "Invalid Firebase Admin SDK credentials.");
 }
 
 // ✅ Initialize Firebase Admin if not already initialized
