@@ -22,12 +22,6 @@ const Chart = memo(({ chartData }) => {
     (cat) => chartData.expenseByCategory[cat] ?? 0
   );
 
-  const expenseCategoryOptions = {
-    chart: { type: "donut" },
-    labels: expenseCategoryLabels,
-    colors: palette.slice(0, expenseCategoryLabels.length),
-  };
-
   // Handle single filtered category
   if (
     (!expenseCategoryLabels.length ||
@@ -45,7 +39,11 @@ const Chart = memo(({ chartData }) => {
 
   // If no transactions, show empty state
   const hasData = expenseIncomeSeries.some((v) => v > 0);
-
+  const expenseCategoryOptions = {
+    chart: { type: "donut" },
+    labels: expenseCategoryLabels,
+    colors: palette.slice(0, expenseCategoryLabels.length),
+  };
   return (
     <Flex
       direction={{ base: "column", md: "row" }}
