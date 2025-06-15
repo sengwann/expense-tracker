@@ -43,6 +43,9 @@ const Chart = memo(({ chartData }) => {
     expenseCategoryLabels.length > 0 &&
     expenseCategorySeries.some((v) => v > 0);
 
+  // If no transactions, show empty state
+  const hasData = expenseIncomeSeries.some((v) => v > 0);
+
   return (
     <Flex
       direction={{ base: "column", md: "row" }}
@@ -67,13 +70,20 @@ const Chart = memo(({ chartData }) => {
           borderRadius="md"
           w="full"
           overflowX="auto"
+          height="305px"
         >
-          <ApexChart
-            options={expenseIncomeOptions}
-            series={expenseIncomeSeries}
-            type="donut"
-            width="100%"
-          />
+          {hasData ? (
+            <ApexChart
+              options={expenseIncomeOptions}
+              series={expenseIncomeSeries}
+              type="donut"
+              width="100%"
+            />
+          ) : (
+            <Box textAlign="center" color="gray.500" py={8} height="100%">
+              No transactions data
+            </Box>
+          )}
         </Box>
       </VStack>
 
@@ -91,7 +101,7 @@ const Chart = memo(({ chartData }) => {
           p={{ base: 2, md: 4 }}
           borderRadius="md"
           w="full"
-          h="100%"
+          height="305px"
           overflowX="auto"
         >
           {hasCategoryData ? (
@@ -102,7 +112,7 @@ const Chart = memo(({ chartData }) => {
               width="100%"
             />
           ) : (
-            <Box textAlign="center" color="gray.500" py={8} h="100%">
+            <Box textAlign="center" color="gray.500" py={8} height="100%">
               No expense category data
             </Box>
           )}

@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   const { user } = useAuth();
 
-  const PAGE_LIMIT = 5;
+  const PAGE_LIMIT = 10;
 
   const swrResponse = useSWR(
     user?.uid

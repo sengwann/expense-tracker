@@ -34,6 +34,7 @@ function UpdateTransactionModal({
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [updatedData, setUpdatedData] = useState(oldTransaction);
+  const [loading, setLoading] = useState(false);
 
   const toast = useToast();
 
@@ -45,6 +46,7 @@ function UpdateTransactionModal({
 
   const handleUpdate = useCallback(async () => {
     try {
+      setLoading(true);
       const { type, category, date, amount } = updatedData;
       if (!type || !category || !date || !amount) {
         showToast("Please fill in all required fields.", "error", toast);
@@ -147,6 +149,7 @@ function UpdateTransactionModal({
     } finally {
       mutateTransactions();
       onClose();
+      setLoading(false);
     }
   }, [updatedData, mutateTransactions, toast, onClose, oldTransaction, userId]);
 
@@ -256,6 +259,8 @@ function UpdateTransactionModal({
               mr={3}
               onClick={handleUpdate}
               _hover={{ bg: "#F97316" }}
+              isLoading={loading}
+              loadingText="Saving..."
             >
               Save
             </Button>

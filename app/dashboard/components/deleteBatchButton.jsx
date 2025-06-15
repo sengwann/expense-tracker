@@ -79,8 +79,6 @@ export default function DeleteBatchButton({ userId, mutateTransactions }) {
         colorScheme="red"
         w={{ base: "100%", md: "250px" }}
         onClick={handleOpen}
-        isLoading={loading}
-        loadingText="Deleting"
       >
         Delete Batch
       </Button>
@@ -118,7 +116,7 @@ export default function DeleteBatchButton({ userId, mutateTransactions }) {
               mr={3}
               onClick={handleDeleteBatch}
               isLoading={loading}
-              loadingText="Deleting"
+              loadingText="Deleting..."
             >
               Delete
             </Button>

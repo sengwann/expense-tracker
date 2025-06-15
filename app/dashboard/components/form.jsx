@@ -31,6 +31,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
     description: "",
     currencyType: "THB",
   });
+  const [loading, setLoading] = useState(false);
 
   const toast = useToast();
 
@@ -89,6 +90,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
   const handleAdd = useCallback(
     async (e) => {
       e.preventDefault();
+
       if (!formData.type) {
         showToast("Please select a type.", "error", toast);
         return;
@@ -101,6 +103,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
         showToast("Please provide a valid amount.", "error", toast);
         return;
       }
+      setLoading(true);
 
       try {
         await processTransaction();
@@ -110,6 +113,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
         showToast(`Error adding transaction: ${err.message}`, "error", toast);
       } finally {
         mutateTransactions();
+        setLoading(false);
       }
     },
     [formData, mutateTransactions, toast, processTransaction]
@@ -214,8 +218,10 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
           _hover={{ bg: "#F97316" }}
           w="100%"
           type="submit"
+          isLoading={loading}
+          loadingText="Adding..."
         >
-          Add
+          Add transaction
         </Button>
       </Stack>
     </form>

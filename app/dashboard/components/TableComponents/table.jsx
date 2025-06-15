@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useState } from "react";
 import {
   Table,
   Thead,
@@ -100,7 +100,7 @@ function TransactionsTable({
       } catch (err) {
         showToast(`Error deleting transaction: ${err.message}`, "error", toast);
       } finally {
-        mutateTransactions(); // Re-fetch data
+        mutateTransactions();
       }
     },
     [mutateTransactions, toast, userId]
@@ -108,7 +108,7 @@ function TransactionsTable({
 
   // Memoize skeleton rows to avoid recreating the array on every render
   const skeletonRows = useMemo(() => {
-    return [...Array(5)].map((_, i) => (
+    return [...Array(10)].map((_, i) => (
       <Tr key={i}>
         {Array(6)
           .fill("")
@@ -163,7 +163,7 @@ function TransactionsTable({
   );
 
   return (
-    <TableContainer height="300px" overflowX="auto">
+    <TableContainer maxH="600px" minH="300px" overflowX="auto">
       <Table variant="simple" mb={8} size="sm">
         <Thead bg="gray.200" position="sticky" top="0" zIndex="1">
           <Tr>
