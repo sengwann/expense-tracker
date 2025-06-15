@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useCallback, useState } from "react";
+import { memo, useMemo, useCallback } from "react";
 import {
   Table,
   Thead,
