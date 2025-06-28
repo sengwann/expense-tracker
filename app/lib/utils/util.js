@@ -3,9 +3,6 @@ export const incomeByCategory = ["salary", "gift", "investment", "bonus"];
 
 export const categoryOptions = (type, expenseByCategory, incomeByCategory) => {
   return [
-    <option key={`select-category-${type}`} value="">
-      Select Category
-    </option>,
     ...(type === "Expense" ? expenseByCategory : incomeByCategory).map(
       (cat) => (
         <option key={cat} value={cat.toLowerCase()}>

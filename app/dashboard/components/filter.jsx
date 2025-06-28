@@ -79,9 +79,6 @@ const Filters = memo(({ filters, setFilters }) => {
     const showIncome = showAll || tempFilters.type === "Income";
 
     return [
-      <option key="select-category" value="">
-        Select category
-      </option>,
       ...(!showAll && showExpense
         ? categoryOptions("Expense", expenseByCategory, incomeByCategory)
         : []),
@@ -153,6 +150,7 @@ const Filters = memo(({ filters, setFilters }) => {
                     handleTempFilterChange("category", e.target.value)
                   }
                 >
+                  <option value="">Select Category</option>
                   {categoryOption}
                 </Select>
               </FormControl>

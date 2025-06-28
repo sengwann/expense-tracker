@@ -164,6 +164,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
               onChange={handleChange}
               required
             >
+              <option value="">Select Category</option>
               {categoryOptions(
                 formData.type,
                 expenseByCategory,
