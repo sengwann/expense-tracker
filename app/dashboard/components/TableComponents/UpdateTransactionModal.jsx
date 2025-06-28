@@ -18,6 +18,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { EditIcon, IconButton } from "@chakra-ui/icons";
+import { FaEdit } from "react-icons/fa";
 import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import {
@@ -193,13 +194,11 @@ function UpdateTransactionModal({
                 </Select>
               </FormControl>
               <FormControl>
-                <FormLabel color="#374151">Category</FormLabel>
                 <Select
                   name="category"
                   value={updatedData.category}
                   onChange={handleInputChange}
                 >
-                  <option value="">Select Category</option>
                   {categoryOptions(
                     updatedData.type,
                     expenseByCategory,
@@ -261,6 +260,7 @@ function UpdateTransactionModal({
               _hover={{ bg: "#F97316" }}
               isLoading={loading}
               loadingText="Saving..."
+              leftIcon={<FaEdit />}
             >
               Save
             </Button>

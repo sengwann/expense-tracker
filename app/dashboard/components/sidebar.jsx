@@ -51,7 +51,7 @@ const Sidebar = memo(() => {
       w={["200px", "300px"]}
       p={4}
       h="100vh"
-      position="fixed"
+      position="fixed" // IMPORTANT: fixed position
       left="0"
       top="0"
       display="flex"

@@ -4,7 +4,7 @@ export const incomeByCategory = ["salary", "gift", "investment", "bonus"];
 export const categoryOptions = (type, expenseByCategory, incomeByCategory) => {
   return [
     <option key={`select-category-${type}`} value="">
-      Category
+      Select Category
     </option>,
     ...(type === "Expense" ? expenseByCategory : incomeByCategory).map(
       (cat) => (
@@ -15,14 +15,6 @@ export const categoryOptions = (type, expenseByCategory, incomeByCategory) => {
     ),
   ];
 };
-
-export const getSymbol = (currency) =>
-  ({
-    baht: "THB",
-    kyats: "MMK",
-    usd: "$",
-    jpy: "JPY",
-  }[currency] || "$");
 
 export const showToast = (description, status, toast) => {
   toast({
@@ -217,3 +209,25 @@ export const palette = [
   "#34D399", // teal
   "#818CF8", // violet
 ];
+
+// Helper to get icon by category
+export const getCategoryIcon = (category, Md, Fa) => {
+  switch (category?.toLowerCase()) {
+    case "food":
+      return Md.MdFastfood;
+    case "shopping":
+      return Md.MdShoppingCart;
+    case "health":
+      return Md.MdHealthAndSafety;
+    case "gift":
+      return Fa.FaGift;
+    case "salary":
+      return Fa.FaMoneyBillWave;
+    case "investment":
+      return Fa.FaPiggyBank;
+    case "bonus":
+      return Fa.FaRegSmile;
+    default:
+      return Md.MdCategory;
+  }
+};

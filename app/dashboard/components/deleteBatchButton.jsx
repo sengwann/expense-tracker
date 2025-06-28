@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { showToast } from "@/app/lib/utils/util";
+import { MdDelete } from "react-icons/md";
 
 export default function DeleteBatchButton({ userId, mutateTransactions }) {
   const toast = useToast();
@@ -79,6 +80,7 @@ export default function DeleteBatchButton({ userId, mutateTransactions }) {
         colorScheme="red"
         w={{ base: "100%", md: "250px" }}
         onClick={handleOpen}
+        leftIcon={<MdDelete />}
       >
         Delete Batch
       </Button>
@@ -117,6 +119,7 @@ export default function DeleteBatchButton({ userId, mutateTransactions }) {
               onClick={handleDeleteBatch}
               isLoading={loading}
               loadingText="Deleting..."
+              leftIcon={<MdDelete />}
             >
               Delete
             </Button>

@@ -16,13 +16,17 @@ import {
   Skeleton,
   Text,
   Box,
+  Icon,
 } from "@chakra-ui/react";
 import { doc, runTransaction } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 import { format } from "date-fns";
 import { DeleteIcon } from "@chakra-ui/icons";
+import * as Md from "react-icons/md";
+import * as Fa from "react-icons/fa";
+
 import UpdateTransactionModal from "./UpdateTransactionModal";
-import { getSymbol, showToast } from "@/app/lib/utils/util";
+import { showToast, getCategoryIcon } from "@/app/lib/utils/util";
 
 function TransactionsTable({
   userId,
@@ -129,17 +133,30 @@ function TransactionsTable({
           <Td>{format(new Date(transaction.date), "yyyy-MM-dd")}</Td>
           <Td>
             <Badge
+              fontWeight="bold"
               colorScheme={transaction.type === "Income" ? "green" : "red"}
             >
               {transaction.type}
             </Badge>
           </Td>
-          <Td>{transaction.category}</Td>
-          <Td maxW="200px" isTruncated>
+          <Td>
+            <Icon
+              as={getCategoryIcon(transaction.category, Md, Fa)}
+              boxSize={4}
+              mr={2}
+              color={transaction.type === "Income" ? "green.500" : "red.500"}
+            />
+            {transaction.category.charAt(0).toUpperCase() +
+              transaction.category.slice(1)}
+          </Td>
+          <Td maxW="200px" color="gray.700" isTruncated>
             {transaction.description}
           </Td>
           <Td isNumeric>
-            {transaction.amount} {getSymbol(transaction.currencyType)}
+            {transaction.amount}{" "}
+            <Text as="span" color="gray.500" fontWeight="bold">
+              ฿
+            </Text>
           </Td>
           <Td>
             <HStack spacing={2}>

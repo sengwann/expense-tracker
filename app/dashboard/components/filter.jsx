@@ -21,6 +21,7 @@ import {
   incomeByCategory,
   categoryOptions,
 } from "@/app/lib/utils/util";
+import { MdFilterList, MdClear } from "react-icons/md";
 
 const Filters = memo(({ filters, setFilters }) => {
   // Initialize tempFilters with current filters
@@ -51,7 +52,15 @@ const Filters = memo(({ filters, setFilters }) => {
 
   // Memoize applyFilters since it depends on tempFilters and setFilters
   const applyFilters = useCallback(() => {
-    setFilters(tempFilters);
+    // Always send endDate as YYYY-MM-DD
+    const filtersToApply = {
+      ...tempFilters,
+      endDate: tempFilters.endDate ? tempFilters.endDate.slice(0, 10) : "",
+      startDate: tempFilters.startDate
+        ? tempFilters.startDate.slice(0, 10)
+        : "",
+    };
+    setFilters(filtersToApply);
     setIsModalOpen(false);
   }, [tempFilters, setFilters]);
 
@@ -111,6 +120,7 @@ const Filters = memo(({ filters, setFilters }) => {
           colorScheme="teal"
           w={{ base: "100%", md: "250px" }}
           onClick={openModal}
+          leftIcon={<MdFilterList />}
         >
           Open Filters
         </Button>
@@ -137,7 +147,6 @@ const Filters = memo(({ filters, setFilters }) => {
               </FormControl>
 
               <FormControl>
-                <FormLabel>Category</FormLabel>
                 <Select
                   value={tempFilters.category}
                   onChange={(e) =>
@@ -172,7 +181,12 @@ const Filters = memo(({ filters, setFilters }) => {
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="teal" mr={3} onClick={applyFilters}>
+            <Button
+              colorScheme="teal"
+              mr={3}
+              onClick={applyFilters}
+              leftIcon={<MdFilterList />}
+            >
               Apply Filters
             </Button>
             <Button
@@ -181,6 +195,7 @@ const Filters = memo(({ filters, setFilters }) => {
               onClick={() => {
                 handleClear();
               }}
+              leftIcon={<MdClear />}
             >
               Clear Filter
             </Button>

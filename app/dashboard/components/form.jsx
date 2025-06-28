@@ -21,6 +21,7 @@ import {
   incomeByCategory,
   categoryOptions,
 } from "../../lib/utils/util";
+import { FaPlus } from "react-icons/fa";
 
 const TransactionForm = memo(({ userId, mutateTransactions }) => {
   const [formData, setFormData] = useState({
@@ -41,6 +42,10 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
       if (name === "type" && value !== prev.type) {
         return { ...prev, type: value, category: "" };
       }
+      // If changing the date, store as YYYY-MM-DD only
+      if (name === "date") {
+        return { ...prev, date: value };
+      }
       return {
         ...prev,
         [name]:
@@ -60,6 +65,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
 
     const newTransaction = {
       ...formData,
+      date: formData.date, // ensure only YYYY-MM-DD is stored
       amount,
       id: tranRef.id,
     };
@@ -172,7 +178,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
             <Input
               type="date"
               name="date"
-              value={formData.date}
+              value={formData.date || ""}
               onChange={handleChange}
             />
           </FormControl>
@@ -220,6 +226,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
           type="submit"
           isLoading={loading}
           loadingText="Adding..."
+          leftIcon={<FaPlus />}
         >
           Add transaction
         </Button>

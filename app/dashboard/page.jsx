@@ -106,71 +106,61 @@ export default function Dashboard() {
   return (
     <ProtectRoute>
       <Flex direction={{ base: "column", md: "row" }}>
-        {/* Sidebar */}
-        <Box
-          display={{ base: "none", md: "block" }}
-          width="300px"
-          color="white"
-          minHeight="100vh"
-          p={5}
-          position="fixed"
-          top={0}
-          left={0}
-          bg="#1E3A8A"
-        >
-          <Sidebar />
-        </Box>
-
-        {/* Main content */}
+        {/* Main content with left margin matching sidebar width */}
         <Box
           bg="#F3F4F6"
           p={{ base: 4, md: 8 }}
-          ml={{ base: 0, md: "300px" }}
+          ml={["200px", "300px"]} // Important: match Sidebar width here
           w="full"
+          minHeight="100vh"
         >
-          <Heading mb={6} textAlign="center" color="#1E3A8A">
-            Welcome to Expense Tracker
-          </Heading>
+          <Sidebar />
+          {/* Max width wrapper and center */}
+          <Box maxW="1200px" mx="auto">
+            <Heading mb={6} textAlign="center" color="#1E3A8A">
+              Welcome to Expense Tracker
+            </Heading>
 
-          <DisplayBalance mainTotals={totals} />
+            <DisplayBalance mainTotals={totals} />
 
-          <TransactionForm
-            userId={user?.uid}
-            mutateTransactions={mutateTransactions}
-          />
-
-          {/* Transactions Table */}
-          <Stack spacing={4} mb={8}>
-            {isTransactionsLoading ? (
-              <Skeleton height="300px" />
-            ) : (
-              <PaginatedTable
-                hasMore={hasMore}
-                lastDoc={newLastDoc}
-                userId={user?.uid}
-                isLoading={isTransactionsLoading}
-                transactions={transactions}
-                mutateTransactions={mutateTransactions}
-                onNextPage={handleNextPage}
-                onPrevPage={handlePrevPage}
-                page={page}
-                totalPages={totalPages}
-              />
-            )}
-          </Stack>
-
-          {/* Filters and Actions */}
-          <Box mt={6} mb={2} display="flex" justifyContent="center">
-            <MainActions
-              filters={memoizedFilters}
-              setFilters={setFilters}
-              transactions={transactions}
+            <TransactionForm
               userId={user?.uid}
               mutateTransactions={mutateTransactions}
             />
-          </Box>
 
-          <Chart chartData={chartData} />
+            {/* Transactions Table */}
+            <Stack spacing={4} mb={8}>
+              {isTransactionsLoading ? (
+                <Skeleton height="300px" />
+              ) : (
+                <PaginatedTable
+                  hasMore={hasMore}
+                  lastDoc={newLastDoc}
+                  userId={user?.uid}
+                  isLoading={isTransactionsLoading}
+                  transactions={transactions}
+                  mutateTransactions={mutateTransactions}
+                  onNextPage={handleNextPage}
+                  onPrevPage={handlePrevPage}
+                  page={page}
+                  totalPages={totalPages}
+                />
+              )}
+            </Stack>
+
+            {/* Filters and Actions */}
+            <Box mt={6} mb={2} display="flex" justifyContent="center">
+              <MainActions
+                filters={memoizedFilters}
+                setFilters={setFilters}
+                transactions={transactions}
+                userId={user?.uid}
+                mutateTransactions={mutateTransactions}
+              />
+            </Box>
+
+            <Chart chartData={chartData} />
+          </Box>
         </Box>
       </Flex>
     </ProtectRoute>

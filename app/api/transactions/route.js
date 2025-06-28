@@ -6,11 +6,11 @@ import {
   expenseByCategory,
   incomeByCategory,
 } from "@/app/lib/utils/util";
-import dayjs from "dayjs";
+import { format, startOfMonth, endOfMonth } from "date-fns";
 
-const today = dayjs();
-const firstDay = today.startOf("month");
-const lastDay = today.endOf("month");
+const today = new Date();
+const firstDay = startOfMonth(today);
+const lastDay = endOfMonth(today);
 
 const calculateTotals = (totalsSnapshot, type, category) => {
   return totalsSnapshot.docs.reduce((acc, cur) => {
@@ -65,8 +65,9 @@ export async function GET(req) {
     const category = searchParams.get("category") || "";
     const limit = Number(searchParams.get("limit")) || 5;
     const startDate =
-      searchParams.get("startDate") || firstDay.format("YYYY-MM-DD");
-    const endDate = searchParams.get("endDate") || lastDay.format("YYYY-MM-DD");
+      searchParams.get("startDate") || format(firstDay, "yyyy-MM-dd");
+    const endDate =
+      searchParams.get("endDate") || format(lastDay, "yyyy-MM-dd");
     const lastDocId = searchParams.get("lastDocId") || null;
 
     if (!userId) {

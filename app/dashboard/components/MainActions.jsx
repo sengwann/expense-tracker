@@ -5,6 +5,7 @@ import Filters from "./filter";
 import DeleteBatchButton from "./deleteBatchButton";
 import exportToExcel from "@/app/lib/exportExcel/exportExcel";
 import { useCallback, useState } from "react";
+import { FaFileExcel } from "react-icons/fa";
 
 export default function MainActions({
   filters,
@@ -58,6 +59,7 @@ export default function MainActions({
         onClick={handleExport}
         isLoading={exportLoading}
         loadingText="Exporting"
+        leftIcon={<FaFileExcel />}
       >
         Export to Excel
       </Button>
