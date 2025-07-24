@@ -11,7 +11,7 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { doc, runTransaction, collection } from "firebase/firestore";
+import { doc, runTransaction, collection,Timestamp } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import {
   showToast,
@@ -20,6 +20,7 @@ import {
   expenseByCategory,
   incomeByCategory,
   categoryOptions,
+  formatDate
 } from "../../lib/utils/util";
 import { FaPlus } from "react-icons/fa";
 
@@ -27,7 +28,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
   const [formData, setFormData] = useState({
     type: "",
     category: "",
-    date: new Date().toLocaleDateString("en-CA"),
+    date: formatDate(),
     amount: "",
     description: "",
     currencyType: "THB",
@@ -65,7 +66,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
 
     const newTransaction = {
       ...formData,
-      date: formData.date, // ensure only YYYY-MM-DD is stored
+      date: Timestamp.fromDate(new Date(formData.date)), 
       amount,
       id: tranRef.id,
     };
@@ -133,7 +134,7 @@ const TransactionForm = memo(({ userId, mutateTransactions }) => {
     setFormData({
       type: "",
       category: "",
-      date: new Date().toISOString().split("T")[0],
+      date: formatDate(),
       amount: "",
       description: "",
       currencyType: "THB",
