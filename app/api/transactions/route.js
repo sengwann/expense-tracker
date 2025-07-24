@@ -1,4 +1,5 @@
 import { db } from "@/app/lib/firebaseAdmin";
+import { Timestamp } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import {
   isValidDate,
@@ -64,9 +65,9 @@ export async function GET(req) {
     const type = searchParams.get("type") || "";
     const category = searchParams.get("category") || "";
     const limit = Number(searchParams.get("limit")) || 5;
-    const startDate =
+    const startDateStr =
       searchParams.get("startDate") || format(firstDay, "yyyy-MM-dd");
-    const endDate =
+    const endDateStr =
       searchParams.get("endDate") || format(lastDay, "yyyy-MM-dd");
     const lastDocId = searchParams.get("lastDocId") || null;
 
@@ -74,19 +75,23 @@ export async function GET(req) {
       return NextResponse.json({ status: 400, error: "User ID is required!" });
     }
 
-    if (startDate && !isValidDate(startDate)) {
+    if (startDateStr && !isValidDate(startDateStr)) {
       return NextResponse.json({
         status: 400,
         error: "Invalid startDate format. Use YYYY-MM-DD.",
       });
     }
 
-    if (endDate && !isValidDate(endDate)) {
+    if (endDateStr && !isValidDate(endDateStr)) {
       return NextResponse.json({
         status: 400,
         error: "Invalid endDate format. Use YYYY-MM-DD.",
       });
     }
+
+    const startDate = Timestamp.fromDate(new Date(`${startDateStr}T00:00:00Z`));
+    const endDate = Timestamp.fromDate(new Date(`${endDateStr}T23:59:59Z`));
+
 
     // Firestore queries
     let tranQuery = db
@@ -130,7 +135,7 @@ export async function GET(req) {
         });
       }
 
-      // Use the document snapshot, not just the ID
+      // Use the document snapshot
       tranQuery = tranQuery.startAfter(lastDocSnapshot);
     }
 
