@@ -228,3 +228,7 @@ export const getCategoryIcon = (category, Md, Fa) => {
       return Md.MdCategory;
   }
 };
+
+export const formatDate = (dateStr=null) =>{
+  return dateStr? new Date(dateStr).toISOString().split("T")[0]:new Date().toISOString().split("T")[0];
+}
